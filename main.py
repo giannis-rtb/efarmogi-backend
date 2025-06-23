@@ -6,10 +6,10 @@ import os
 
 app = FastAPI()
 
-# Επιτρέπουμε αιτήματα από το frontend (π.χ. localhost:3002 ή όλα)
+# Επιτρέπουμε CORS ΜΟΝΟ από το Vercel frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Μπορείς να το περιορίσεις π.χ. ["http://localhost:3002"]
+    allow_origins=["https://efarmogi-frontend.vercel.app"],  # <-- Εδώ περιορίζουμε σωστά
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -19,7 +19,7 @@ app.add_middleware(
 class NameRequest(BaseModel):
     name: str
 
-# ✅ Root endpoint για να δείχνει κάτι στο "/"
+# Root endpoint
 @app.get("/")
 def read_root():
     return {"message": "Το backend τρέχει σωστά με FastAPI 🚀"}
@@ -29,7 +29,7 @@ def read_root():
 def greet(request: NameRequest):
     return {"message": f"Γεια σου, {request.name}!"}
 
-# Εκκίνηση server όταν τρέχει το αρχείο απευθείας (για τοπική ανάπτυξη ή Render)
+# Εκκίνηση server (για Render & local)
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
     uvicorn.run(app, host="0.0.0.0", port=port)
